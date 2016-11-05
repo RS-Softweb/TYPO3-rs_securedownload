@@ -39,7 +39,7 @@ $TCA['tx_rssecuredownload_codes'] = array (
 				'checkbox' => '0',
 				'default'  => '0',
 				'range'    => array (
-					'upper' => mktime(0, 0, 0, 12, 31, 2020),
+					'upper' => mktime(0, 0, 0, 12, 31, 2030),
 					'lower' => mktime(0, 0, 0, date('m')-1, date('d'), date('Y'))
 				)
 			)

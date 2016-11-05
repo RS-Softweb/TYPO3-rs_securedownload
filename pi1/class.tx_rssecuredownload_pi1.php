@@ -26,7 +26,9 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
 
-if (!class_exists('tslib_pibase')) require_once(PATH_tslib . 'class.tslib_pibase.php');
+use \TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use \TYPO3\CMS\Frontend\Plugin\AbstractPlugin;
 
 /**
  * Plugin 'Secure Download' for the 'rs_securedownload' extension.
@@ -35,7 +37,7 @@ if (!class_exists('tslib_pibase')) require_once(PATH_tslib . 'class.tslib_pibase
  * @package	TYPO3
  * @subpackage	tx_rssecuredownload
  */
-class tx_rssecuredownload_pi1 extends tslib_pibase {
+class tx_rssecuredownload_pi1 extends AbstractPlugin {
 	public $prefixId      = 'tx_rssecuredownload_pi1';	// Same as class name
 	public $prefixString  = 'tx-rssecuredownload-pi1'; // Same as class name, but "_" replaced with "-" (used for names)
 	public $scriptRelPath = 'pi1/class.tx_rssecuredownload_pi1.php';	// Path to this script relative to the extension dir.
@@ -67,14 +69,14 @@ class tx_rssecuredownload_pi1 extends tslib_pibase {
 			$this->extConf['enableNameLogging'] = 0;
 		}
 		if (strlen($this->extConf['templateFile']) < 1) {
-			$this->extConf['templateFile'] = t3lib_extMgm::siteRelPath($this->extKey).'pi1/template.htm';
+			$this->extConf['templateFile'] = ExtensionManagementUtility::siteRelPath($this->extKey).'pi1/template.htm';
 		}
 
 		//set important values
 		$pid = $this->cObj->data['pid'];
 		$uid = $this->cObj->data['uid'];
-		$pathUploads = t3lib_div::dirname($_SERVER['SCRIPT_FILENAME']).'/uploads/tx_rssecuredownload/';
-		$pluginPath = t3lib_extMgm::siteRelPath($this->extKey);
+		$pathUploads = GeneralUtility::dirname($_SERVER['SCRIPT_FILENAME']).'/uploads/tx_rssecuredownload/';
+		$pluginPath = ExtensionManagementUtility::siteRelPath($this->extKey);
 
 		//get data from flexform
 		$tryall = $this->FF('tryall', 'general');

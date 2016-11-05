@@ -26,6 +26,9 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  */
 
+use \TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use \TYPO3\CMS\Core\Utility\GeneralUtility;
+
 /**
  * Class that adds the wizard icon.
  *
@@ -45,7 +48,7 @@ class tx_rssecuredownload_pi1_wizicon {
 	public function proc($wizardItems)	{
 		$LL = $this->includeLocalLang();
 		$wizardItems['plugins_tx_rssecuredownload_pi1'] = array(
-			'icon'=>t3lib_extMgm::extRelPath('rs_securedownload').'pi1/ce_wiz.gif',
+			'icon'=>ExtensionManagementUtility::extRelPath('rs_securedownload').'pi1/ce_wiz.gif',
 			'title'=>$GLOBALS['LANG']->getLLL('pi1_title', $LL),
 			'description'=>$GLOBALS['LANG']->getLLL('pi1_plus_wiz_description', $LL),
 			'params'=>'&defVals[tt_content][CType]=list&defVals[tt_content][list_type]=rs_securedownload_pi1'
@@ -59,8 +62,8 @@ class tx_rssecuredownload_pi1_wizicon {
 	 * @return	The array with language labels
 	 */
 	private function includeLocalLang()	{
-		$llFile = t3lib_extMgm::extPath('rs_securedownload').'locallang.xml';
-		$LOCAL_LANG =  t3lib_div::readLLfile($llFile, $GLOBALS['LANG']->lang);
+		$llFile = ExtensionManagementUtility::extPath('rs_securedownload').'locallang.xml';
+		$LOCAL_LANG =  GeneralUtility::readLLfile($llFile, $GLOBALS['LANG']->lang);
 		return $LOCAL_LANG;
 	}
 }
