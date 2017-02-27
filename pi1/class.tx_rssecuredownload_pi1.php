@@ -59,7 +59,7 @@ class tx_rssecuredownload_pi1 extends AbstractPlugin
         $this->pi_initPIflexForm();
         $db = $GLOBALS['TYPO3_DB'];
         $this->conf = $conf;
-        $this->pi_loadLL();
+        $this->pi_loadLL('EXT:rs_securedownload/Resources/Private/Language/locallang.xml');
 
         // get the extension-manager configuration
         $this->extConf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['rs_securedownload']);

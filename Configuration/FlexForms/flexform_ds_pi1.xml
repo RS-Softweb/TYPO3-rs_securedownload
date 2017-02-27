@@ -6,13 +6,13 @@
 	<general>
 	<ROOT>
 		<TCEforms>
-			<sheetTitle>LLL:EXT:rs_securedownload/locallang_db.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
+			<sheetTitle>LLL:EXT:rs_securedownload/Resources/Private/Language/locallang_db.xml:tt_content.pi_flexform.sheet_general</sheetTitle>
 		</TCEforms>
 		<type>array</type>
 		<el>
 			<downloadselect>
 				<TCEforms>
-					<label>LLL:EXT:rs_securedownload/locallang_db.xml:tt_content.pi_flexform.downloadselect</label>
+					<label>LLL:EXT:rs_securedownload/Resources/Private/Language/locallang_db.xml:tt_content.pi_flexform.downloadselect</label>
 					<config>
 						<type>group</type>
 						<internal_type>db</internal_type>
@@ -25,7 +25,7 @@
 			</downloadselect>
 			<tryall>
 				<TCEforms>
-					<label>LLL:EXT:rs_securedownload/locallang_db.xml:tt_content.pi_flexform.tryall</label>
+					<label>LLL:EXT:rs_securedownload/Resources/Private/Language/locallang_db.xml:tt_content.pi_flexform.tryall</label>
 					<config>
 						<type>check</type>
 					</config>
