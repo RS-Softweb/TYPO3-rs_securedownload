@@ -1,9 +1,10 @@
 <?php
 defined('TYPO3_MODE') or die();
 
+$locallangPath = 'LLL:EXT:rs_securedownload/Resources/Private/Language/locallang_db.xml';
 return [
     'ctrl' =>  [
-        'title'     => 'LLL:EXT:rs_securedownload/locallang_db.xml:tx_rssecuredownload_codes',
+        'title'     => $locallangPath . ':tx_rssecuredownload_codes',
         'label'     => 'title',
         'tstamp'    => 'tstamp',
         'crdate'    => 'crdate',
@@ -59,7 +60,7 @@ return [
         ],
         'title' =>  [
             'exclude' => 0,
-            'label' => 'LLL:EXT:rs_securedownload/locallang_db.xml:tx_rssecuredownload_codes.title',
+            'label' => $locallangPath . ':tx_rssecuredownload_codes.title',
             'config' =>  [
                 'type' => 'input',
                 'size' => '30',
@@ -68,7 +69,7 @@ return [
         ],
         'description' =>  [
             'exclude' => 0,
-            'label' => 'LLL:EXT:rs_securedownload/locallang_db.xml:tx_rssecuredownload_codes.description',
+            'label' => $locallangPath . ':tx_rssecuredownload_codes.description',
             'config' =>  [
                 'type' => 'text',
                 'cols' => '30',
@@ -77,7 +78,7 @@ return [
         ],
         'codeprompt' =>  [
             'exclude' => 0,
-            'label' => 'LLL:EXT:rs_securedownload/locallang_db.xml:tx_rssecuredownload_codes.codeprompt',
+            'label' => $locallangPath . ':tx_rssecuredownload_codes.codeprompt',
             'config' =>  [
                 'type' => 'input',
                 'size' => '30',
@@ -86,7 +87,7 @@ return [
         ],
         'code' =>  [
             'exclude' => 0,
-            'label' => 'LLL:EXT:rs_securedownload/locallang_db.xml:tx_rssecuredownload_codes.code',
+            'label' => $locallangPath . ':tx_rssecuredownload_codes.code',
             'config' =>  [
                 'type' => 'input',
                 'size' => '30',
@@ -95,7 +96,7 @@ return [
         ],
         'file' =>  [
             'exclude' => 0,
-            'label' => 'LLL:EXT:rs_securedownload/locallang_db.xml:tx_rssecuredownload_codes.file',
+            'label' => $locallangPath . ':tx_rssecuredownload_codes.file',
             'config' =>  [
                 'type' => 'group',
                 'internal_type' => 'file',
