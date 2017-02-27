@@ -1,14 +1,25 @@
 <?php
-if (!defined('TYPO3_MODE')) {
-    die('Access denied.');
-}
+defined('TYPO3_MODE') or die();
 
-$TCA['tx_rssecuredownload_codes'] =  [
-    'ctrl' => $TCA['tx_rssecuredownload_codes']['ctrl'],
+return [
+    'ctrl' =>  [
+        'title'     => 'LLL:EXT:rs_securedownload/locallang_db.xml:tx_rssecuredownload_codes',
+        'label'     => 'title',
+        'tstamp'    => 'tstamp',
+        'crdate'    => 'crdate',
+        'cruser_id' => 'cruser_id',
+        'default_sortby' => 'ORDER BY crdate',
+        'delete' => 'deleted',
+        'enablecolumns' =>  [
+            'disabled' => 'hidden',
+            'starttime' => 'starttime',
+            'endtime' => 'endtime',
+        ],
+        'iconfile' => 'EXT:rs_securedownload/Resources/Public/Icons/icon_tx_rssecuredownload_codes.gif',
+    ],
     'interface' =>  [
         'showRecordFieldList' => 'hidden,starttime,endtime,title,description,codeprompt,code,file'
     ],
-    'feInterface' => $TCA['tx_rssecuredownload_codes']['feInterface'],
     'columns' =>  [
         'hidden' =>  [
             'exclude' => 0,

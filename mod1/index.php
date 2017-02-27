@@ -27,30 +27,33 @@
  */
 
     // DEFAULT initialization of a module [BEGIN]
+use TYPO3\CMS\Backend\Module\BaseScriptClass;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+
 unset($MCONF);
 require_once('conf.php');
 require_once($BACK_PATH . 'init.php');
 
-if (version_compare(TYPO3_branch, '6.0', '<')) {
-    require_once($BACK_PATH . 'template.php');
-}
 
-$LANG->includeLLFile('EXT:rs_securedownload/mod1/locallang.xml');
+$GLOBALS['LANG']->includeLLFile('EXT:rs_securedownload/mod1/locallang.xml');
+$GLOBALS['BE_USER']->modAccess($MCONF, 1);
 
-if (!class_exists('t3lib_scbase')) {
-    require_once(PATH_t3lib . 'class.t3lib_scbase.php');
-}
-
-$BE_USER->modAccess($MCONF, 1);    // This checks permissions and exits if the users has no permission for entry.
-    // DEFAULT initialization of a module [END]
+// DEFAULT initialization of a module [END]
 
 /**
  * Module 'Secure Download' for the 'rs_securedownload' extension.
  *
  * @author	Rene <typo3@rs-softweb.de>
  */
-class tx_rssecuredownload_module1 extends t3lib_SCbase
+class tx_rssecuredownload_module1 extends BaseScriptClass
 {
+    public $csvOutput;
+    public $csvOutputCode;
+    public $csvOutputType;
+    public $delete;
+    public $deleteCode;
+    public $deleteType;
     private $pageinfo;
     private $pagelist = '';
     private $csvContent = [];
@@ -74,18 +77,18 @@ class tx_rssecuredownload_module1 extends t3lib_SCbase
         // init the first csv-content row
         $this->csvContent = [];
         // check, if we should render a csv-table
-        $this->csvOutput = (t3lib_div::_GET('format') == 'csv') ? true : false;
+        $this->csvOutput = (GeneralUtility::_GET('format') == 'csv') ? true : false;
         // get the code for csv-table output
-        $this->csvOutputCode = (int)t3lib_div::_GET('code');
+        $this->csvOutputCode = (int)GeneralUtility::_GET('code');
         // get the type for csv-table output (0=all, 1=failure, 2=correct) )
-        $this->csvOutputType = t3lib_div::_GET('type');
+        $this->csvOutputType = GeneralUtility::_GET('type');
 
         // check, if we should delete rows
-        $this->delete = (t3lib_div::_GET('delete') == '1') ? true : false;
+        $this->delete = (GeneralUtility::_GET('delete') == '1') ? true : false;
         // get the code for delete
-        $this->deleteCode = (int)t3lib_div::_GET('code');
+        $this->deleteCode = (int)GeneralUtility::_GET('code');
         // get the type for delete (0=all, 1=failure, 2=correct, 3=single) )
-        $this->deleteType = t3lib_div::_GET('type');
+        $this->deleteType = GeneralUtility::_GET('type');
     }
 
     /**
@@ -117,14 +120,13 @@ class tx_rssecuredownload_module1 extends t3lib_SCbase
     {
         // Access check!
         // The page will show only if there is a valid page and if this page may be viewed by the user
-        $this->pageinfo = t3lib_BEfunc::readPageAccess($this->id, $this->perms_clause);
+        $this->pageinfo = BackendUtility::readPageAccess($this->id, $this->perms_clause);
         $access = is_array($this->pageinfo) ? 1 : 0;
 
 //		if (($this->id && $access) || ($BE_USER->user['admin'] && !$this->id))	{
         if (($this->id && $access)) {
-
             // Draw the header.
-            $this->doc = t3lib_div::makeInstance('template');
+            $this->doc = GeneralUtility::makeInstance('template');
             $this->doc->backPath = $GLOBALS['BACK_PATH'];
             $this->doc->form='<form action="" method="POST">';
 
@@ -159,7 +161,7 @@ class tx_rssecuredownload_module1 extends t3lib_SCbase
 					if (top.fsMod) top.fsMod.recentIds["web"] = 0;
 				</script>
 				<script language="javascript" type="text/javascript">
-					goto_id(\'#rs' . t3lib_div::_GET('expand') . '\');
+					goto_id(\'#rs' . GeneralUtility::_GET('expand') . '\');
 				</script>
 			';
 
@@ -167,7 +169,17 @@ class tx_rssecuredownload_module1 extends t3lib_SCbase
             $this->content.=$this->doc->header($GLOBALS['LANG']->getLL('title'));
             $this->content.=$this->doc->spacer(5);
             $this->content.=$this->doc->section('',
-                $this->doc->funcMenu($headerSection, t3lib_BEfunc::getFuncMenu($this->id, 'SET[function]', $this->MOD_SETTINGS['function'], $this->MOD_MENU['function'], 'index.php')));
+                $this->doc->funcMenu(
+                    $headerSection,
+                    BackendUtility::getFuncMenu(
+                        $this->id,
+                        'SET[function]',
+                        $this->MOD_SETTINGS['function'],
+                        $this->MOD_MENU['function'],
+                        'index.php'
+                    )
+                )
+            );
             $this->content.=$this->doc->divider(5);
 
             // Delete, if requested
@@ -180,13 +192,21 @@ class tx_rssecuredownload_module1 extends t3lib_SCbase
 
             // ShortCut
             if ($GLOBALS['BE_USER']->mayMakeShortcut()) {
-                $this->content.=$this->doc->spacer(20) . $this->doc->section('', $this->doc->makeShortcutIcon('id', implode(',', array_keys($this->MOD_MENU)), $this->MCONF['name']));
+                $this->content .=
+                    $this->doc->spacer(20) . $this->doc->section(
+                        '',
+                        $this->doc->makeShortcutIcon(
+                            'id',
+                            implode(',', array_keys($this->MOD_MENU)),
+                            $this->MCONF['name']
+                        )
+                    );
             }
 
             $this->content.=$this->doc->spacer(10);
         } else {
             // If no access or if ID == zero
-            $this->doc = t3lib_div::makeInstance('template');
+            $this->doc = GeneralUtility::makeInstance('template');
             $this->doc->backPath = $GLOBALS['BACK_PATH'];
 
             $this->content.=$this->doc->startPage($GLOBALS['LANG']->getLL('title'));
@@ -200,7 +220,7 @@ class tx_rssecuredownload_module1 extends t3lib_SCbase
     /**
      * Prints out the module HTML
      *
-     * @return	void
+     * @return void
      * @access public
      */
     public function printContent()
@@ -218,7 +238,7 @@ class tx_rssecuredownload_module1 extends t3lib_SCbase
     /**
      * Generates the module content
      *
-     * @return	void
+     * @return void
      * @access protected
      */
     protected function moduleContent()
@@ -227,16 +247,17 @@ class tx_rssecuredownload_module1 extends t3lib_SCbase
         $lang = $GLOBALS['LANG'];
         $db =& $GLOBALS['TYPO3_DB'];
 
-        $image_plus = '<image src="../res/plus.gif">';
-        $image_minus = '<image src="../res/minus.gif">';
-        $image_delete = '<image src="../res/garbage.gif">';
-        $image_export = '<image src="../res/export.gif">';
+        $image_plus = '<img src="../Resources/Public/Icons/plus.gif">';
+        $image_minus = '<img src="../Resources/Public/Icons/minus.gif">';
+        $image_delete = '<img src="../Resources/Public/Icons/garbage.gif">';
+        $image_export = '<img src="../Resources/Public/Icons/export.gif">';
         $color1 = '#CCCCCC';
         $color2 = '#DDDDDD';
         $brd_dot = ' style="border-bottom:1px dotted grey;padding:2px" ';
         $brd_full= ' style="border-bottom:1px solid black;padding:2px" ';
         $tableline_title1 = '<tr BGCOLOR="%s"><td %s width="10" align="center" valign="top">%s</td><td %s width="10" valign="top">%s&nbsp;</td>'
             . '<td %s colspan="2">%s&nbsp;</td><td %s width="10" align="center" valign="middle">&nbsp;</td></tr>';
+
         $tableline_title2 = '<tr BGCOLOR="%s"><td %s width="10" align="center" valign="top">%s</td><td %s width="10" valign="top">%s&nbsp;</td>'
             . '<td %s colspan="2">%s&nbsp;</td></tr>';
         $tableline_title3 = '<tr BGCOLOR="%s"><td %s width="10" align="center" valign="top">&nbsp;</td><td %s align="center" valign="top" colspan="3">%s</td></tr>';
@@ -361,7 +382,7 @@ class tx_rssecuredownload_module1 extends t3lib_SCbase
 
                         if ($count_logs < 1) {
                             $link_image = $anchor . $count_text . '&nbsp;</acronym>';
-                        } elseif (t3lib_div::_GET('expand') == $codes_result['uid']) {
+                        } elseif (GeneralUtility::_GET('expand') == $codes_result['uid']) {
                             $link_image = $anchor . '<a href="?id=' . $this->id . '&expand=">' . $count_text . $image_minus . '</acronym>' . '</a>';
                         } else {
                             $link_image = $anchor . '<a href="?id=' . $this->id . '&expand=' . $codes_result['uid'] . '">' . $count_text . $image_plus . '</acronym>' . '</a>';
@@ -373,7 +394,7 @@ class tx_rssecuredownload_module1 extends t3lib_SCbase
                             $content .= sprintf($tableline_title1, $color, $brd_dot, '&nbsp;', $brd_dot, '&nbsp;', $brd_dot, '<span style="color: red;">' . $lang->getLL('table_deleted') . '!!</span>', $brd_dot);
                         }
 
-                        if ((t3lib_div::_GET('expand') == $codes_result['uid'])) {
+                        if ((GeneralUtility::_GET('expand') == $codes_result['uid'])) {
                             if ($count_logs > 0) {
                                 for ($i_logs = 1; $i_logs <= $count_logs; $i_logs++) {
                                     $logs_result = $db->sql_fetch_assoc($logs_query);
@@ -446,7 +467,7 @@ class tx_rssecuredownload_module1 extends t3lib_SCbase
 
                         if ($count_logs < 1) {
                             $link_image = $anchor . $count_text . '&nbsp;</acronym>';
-                        } elseif (t3lib_div::_GET('expand') == $codes_result['uid']) {
+                        } elseif (GeneralUtility::_GET('expand') == $codes_result['uid']) {
                             $link_image = $anchor . '<a href="?id=' . $this->id . '&expand=">' . $count_text . $image_minus . '</acronym>' . '</a>';
                         } else {
                             $link_image = $anchor . '<a href="?id=' . $this->id . '&expand=' . $codes_result['uid'] . '">' . $count_text . $image_plus . '</acronym>' . '</a>';
@@ -458,7 +479,7 @@ class tx_rssecuredownload_module1 extends t3lib_SCbase
                             $content .= sprintf($tableline_title1, $color, $brd_dot, '&nbsp;', $brd_dot, '&nbsp;', $brd_dot, '<span style="color: red;">' . $lang->getLL('table_deleted') . '!!</span>', $brd_dot);
                         }
 
-                        if ((t3lib_div::_GET('expand') == $codes_result['uid'])) {
+                        if ((GeneralUtility::_GET('expand') == $codes_result['uid'])) {
                             if ($count_logs > 0) {
                                 for ($i_logs = 1; $i_logs <= $count_logs; $i_logs++) {
                                     $logs_result = $db->sql_fetch_assoc($logs_query);
@@ -601,7 +622,7 @@ class tx_rssecuredownload_module1 extends t3lib_SCbase
 
         foreach ($this->csvContent as $row) {
             //function csvValues($row, $delim=',', $quote='"')
-            $content .= t3lib_div::csvValues($row, ';', '"') . "\n";
+            $content .= GeneralUtility::csvValues($row, ';', '"') . "\n";
         }
 
         // I'm not sure if this is necessary for all programs you are importing to, tested with OpenOffice.org
@@ -641,18 +662,9 @@ class tx_rssecuredownload_module1 extends t3lib_SCbase
     }
 }
 
-if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/rs_securedownload/mod1/index.php']) {
-    include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/rs_securedownload/mod1/index.php']);
-}
 
 // Make instance:
-$SOBE = t3lib_div::makeInstance('tx_rssecuredownload_module1');
+$SOBE = GeneralUtility::makeInstance('tx_rssecuredownload_module1');
 $SOBE->init();
-
-// Include files?
-foreach ($SOBE->include_once as $INC_FILE) {
-    include_once($INC_FILE);
-}
-
 $SOBE->main();
 $SOBE->printContent();

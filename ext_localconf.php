@@ -1,7 +1,5 @@
 <?php
-if (!defined('TYPO3_MODE')) {
-    die('Access denied.');
-}
+defined('TYPO3_MODE') or die();
 
 \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPItoST43(
     $_EXTKEY,
@@ -18,4 +16,8 @@ if (!defined('TYPO3_MODE')) {
 	tt_content.shortcut.20.0.conf.tx_rssecuredownload_codes.CMD = singleView
     ',
     43
+);
+
+\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addPageTSConfig(
+    '<INCLUDE_TYPOSCRIPT: source="FILE:EXT:rs_securedownload/Configuration/PageTS/NewContentElementWizard.ts">'
 );

@@ -71,7 +71,7 @@ class tx_rssecuredownload_pi1 extends AbstractPlugin
         }
         if (strlen($this->extConf['templateFile']) < 1) {
             $this->extConf['templateFile'] =
-                ExtensionManagementUtility::siteRelPath($this->extKey) . 'pi1/template.htm';
+                ExtensionManagementUtility::siteRelPath($this->extKey) . 'Resources/Private/Templates/template.htm';
         }
 
         //set important values
@@ -268,7 +268,7 @@ class tx_rssecuredownload_pi1 extends AbstractPlugin
     /**
      * Returns the data of the User-Computer
      *
-     * @return    Array        Array with the user-computer data
+     * @return    array  Array with the user-computer data
      * @access    private
      */
     private function UserDataArray()
