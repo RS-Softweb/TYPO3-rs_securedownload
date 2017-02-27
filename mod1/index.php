@@ -28,12 +28,13 @@
 
     // DEFAULT initialization of a module [BEGIN]
 use TYPO3\CMS\Backend\Module\BaseScriptClass;
+use TYPO3\CMS\Backend\Template\DocumentTemplate;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
-unset($MCONF);
-require_once('conf.php');
-require_once($BACK_PATH . 'init.php');
+if (!isset($MCONF)) {
+    require('conf.php');
+}
 
 
 $GLOBALS['LANG']->includeLLFile('EXT:rs_securedownload/mod1/locallang.xml');
@@ -126,7 +127,7 @@ class tx_rssecuredownload_module1 extends BaseScriptClass
 //		if (($this->id && $access) || ($BE_USER->user['admin'] && !$this->id))	{
         if (($this->id && $access)) {
             // Draw the header.
-            $this->doc = GeneralUtility::makeInstance('template');
+            $this->doc = GeneralUtility::makeInstance(DocumentTemplate::class);
             $this->doc->backPath = $GLOBALS['BACK_PATH'];
             $this->doc->form='<form action="" method="POST">';
 
@@ -206,7 +207,7 @@ class tx_rssecuredownload_module1 extends BaseScriptClass
             $this->content.=$this->doc->spacer(10);
         } else {
             // If no access or if ID == zero
-            $this->doc = GeneralUtility::makeInstance('template');
+            $this->doc = GeneralUtility::makeInstance(DocumentTemplate::class);
             $this->doc->backPath = $GLOBALS['BACK_PATH'];
 
             $this->content.=$this->doc->startPage($GLOBALS['LANG']->getLL('title'));
